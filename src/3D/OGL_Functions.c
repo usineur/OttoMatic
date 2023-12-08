@@ -1,5 +1,9 @@
 #include <SDL.h>
+#ifdef __SWITCH__
+#include <GL/glew.h>
+#else
 #include <SDL_opengl.h>
+#endif
 
 #include "game.h"
 

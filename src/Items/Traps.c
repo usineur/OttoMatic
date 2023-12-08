@@ -545,7 +545,9 @@ ObjNode *plunger = pump->ChainNode;
 					PlayEffect3D(EFFECT_AIRPUMP, &body->Coord);
 				}
 				plunger->Mode = PLUNGER_MODE_DOWN;
+#ifndef __SWITCH__
 				SDL_FALLTHROUGH;
+#endif
 
 		case	PLUNGER_MODE_DOWN:
 				plunger->Timer += speed * gFramesPerSecondFrac;

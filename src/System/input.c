@@ -174,6 +174,12 @@ void UpdateInput(void)
 				TryOpenController(false);
 				break;
 
+#ifdef __SWITCH__
+			case SDL_CONTROLLERDEVICEADDED:
+				TryOpenController(false);
+				break;
+#endif
+
 			case SDL_JOYDEVICEREMOVED:	// event.jdevice.which is the joy's UNIQUE INSTANCE ID (not an index!)
 				OnJoystickRemoved(event.jdevice.which);
 				break;
