@@ -11,6 +11,10 @@
 
 #include "game.h"
 
+#ifdef __SWITCH__
+#include "nx.h"
+#endif
+
 /****************************/
 /*    PROTOTYPES            */
 /****************************/
@@ -136,7 +140,11 @@ void InitDefaultPrefs(void)
 {
 	memset(&gGamePrefs, 0, sizeof(gGamePrefs));
 
+#ifdef __SWITCH__
+	gGamePrefs.language						= GetSwitchBestLanguage();
+#else
 	gGamePrefs.language						= GetBestLanguageIDFromSystemLocale();
+#endif
 	gGamePrefs.fullscreen					= true;
 	gGamePrefs.vsync						= true;
 	gGamePrefs.uiCentering					= false;

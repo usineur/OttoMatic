@@ -263,6 +263,7 @@ void Exit2D(void)
 
 void SetFullscreenModeFromPrefs(void)
 {
+#ifndef __SWITCH__
 	if (!gGamePrefs.fullscreen)
 	{
 		SDL_SetWindowFullscreen(gSDLWindow, 0);
@@ -298,6 +299,7 @@ void SetFullscreenModeFromPrefs(void)
 			SDL_SetWindowFullscreen(gSDLWindow, SDL_WINDOW_FULLSCREEN);
 		}
 	}
+#endif
 
 	SDL_GL_SetSwapInterval(gGamePrefs.vsync);
 
