@@ -23,8 +23,12 @@ extern "C"
 		/* HEADERS */
 
 #include <SDL3/SDL.h>
+#ifdef __SWITCH__
+#include <GL/glew.h>
+#else
 #include <SDL3/SDL_opengl.h>
 #include <SDL3/SDL_opengl_glext.h>
+#endif
 
 #include "Pomme.h"
 

@@ -95,7 +95,15 @@ endif()
 
 add_subdirectory(extern/Pomme)
 
-find_package(OpenGL REQUIRED)
+if(NINTENDO_SWITCH)
+	include(FindPkgConfig)
+	pkg_check_modules(SDL3 sdl3 REQUIRED)
+	find_package(GLEW REQUIRED)
+	find_library(GL_LIBRARY NAMES GLEW)
+else()
+	find_package(OpenGL REQUIRED)
+	find_library(GL_LIBRARY NAMES OpenGL)
+endif()
 
 #------------------------------------------------------------------------------
 # EXECUTABLE TARGET
@@ -210,7 +218,7 @@ else()
 endif()
 
 # Link core dependencies
-target_link_libraries(${GAME_TARGET} PRIVATE Pomme OpenGL::GL)
+target_link_libraries(${GAME_TARGET} PRIVATE Pomme ${GL_LIBRARY})
 
 # Add required frameworks for KillMacMouseAcceleration
 if(APPLE)
@@ -309,6 +317,23 @@ if(WIN32)
 	# When installing (cmake --install), copy Visual Studio redistributable DLLs to install location
 	include(InstallRequiredSystemLibraries)
 endif()
+
+if(NINTENDO_SWITCH)
+	set(CMAKE_CXX_FLAGS "-O3 -march=armv8-a -mtune=cortex-a57 -mtp=soft -fPIE -ffunction-sections -fdata-sections -ftls-model=local-exec")
+	include_directories($ENV{DEVKITPRO}/libnx/include $ENV{DEVKITPRO}/portlibs/switch/include)
+	add_definitions(-D__SWITCH__)
+	add_definitions(-DGLEW_NO_GLU)
+	add_custom_target(${CMAKE_PROJECT_NAME}.nro
+		DEPENDS ${CMAKE_PROJECT_NAME}
+		COMMAND nacptool --create "Otto Matic" "jorio, usineur" ${GAME_VERSION} ${CMAKE_PROJECT_NAME}.nacp
+		COMMAND elf2nro ${CMAKE_PROJECT_NAME}.elf ${CMAKE_PROJECT_NAME}.nro
+			--icon=${CMAKE_SOURCE_DIR}/icon.jpg --nacp=${CMAKE_PROJECT_NAME}.nacp
+	)
+	add_custom_target(nxlink
+		DEPENDS ${CMAKE_PROJECT_NAME}.nro
+		COMMAND nxlink -a $(SWITCHIP) ${CMAKE_PROJECT_NAME}.nro -s -p ${CMAKE_PROJECT_NAME}/${CMAKE_PROJECT_NAME}.nro
+	)
+endif(NINTENDO_SWITCH)
 
 # Copy documentation to output folder
 configure_file(${CMAKE_SOURCE_DIR}/packaging/ReadMe.txt.in ${CMAKE_CURRENT_BINARY_DIR}/ReadMe.txt)

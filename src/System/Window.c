@@ -321,6 +321,7 @@ void MoveToPreferredDisplay(void)
 
 void SetFullscreenMode(bool enforceDisplayPref)
 {
+#ifndef __SWITCH__
 	if (!gGamePrefs.fullscreen)
 	{
 		SDL_SetWindowFullscreen(gSDLWindow, 0);
@@ -351,6 +352,7 @@ void SetFullscreenMode(bool enforceDisplayPref)
 		SDL_SetWindowFullscreen(gSDLWindow, true);
 		SDL_SyncWindow(gSDLWindow);
 	}
+#endif
 
 	SDL_GL_SetSwapInterval(gGamePrefs.vsync);
 	EatMouseEvents();

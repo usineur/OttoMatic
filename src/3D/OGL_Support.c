@@ -258,7 +258,16 @@ static void OGL_CreateDrawContext(void)
 
 			/* CREATE AGL CONTEXT & ATTACH TO WINDOW */
 
+#ifdef __SWITCH__
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
+#endif
 	gAGLContext = SDL_GL_CreateContext(gSDLWindow);
+#ifdef __SWITCH__
+	GLenum err = glewInit();
+	if (err != GLEW_OK) {
+		GAME_ASSERT_MESSAGE(gSDLWindow, "glewInit() failed");
+	}
+#endif
 	GAME_ASSERT_MESSAGE(gAGLContext, SDL_GetError());
 	GAME_ASSERT(glGetError() == GL_NO_ERROR);
 
